@@ -1,3 +1,9 @@
+/**
+ * AVL树（二叉平衡树）实现
+ * 
+ * @author zhangpeng
+ * @param <Anytype>
+ */
 public class AVLTree<Anytype extends Comparable<? super Anytype>> {
 	AVLNode<Anytype> root;
 
@@ -16,24 +22,103 @@ public class AVLTree<Anytype extends Comparable<? super Anytype>> {
 		int result = node.theElement.compareTo(x);
 		if (result < 0) {
 			node.right = insert(x, node.right);
-			if ((node.height(node.right) - node.height(node.left)) == 2) {
-				if (x.compareTo(node.right.theElement) > 0) {
-					node = rotateWithRightChild(node);
-				} else {
-					node = doubleRotateWithRightChild(node);
-				}
-			}
 		} else if (result > 0) {
 			node.left = insert(x, node.left);
-			if ((node.height(node.left) - node.height(node.right)) == 2) {
-				if (x.compareTo(node.left.theElement) < 0) {
-					node = rotateWithLeftChild(node);
-				} else {
-					node = doubleRotateWithLeftChild(node);
-				}
+		} else {
+			node.right = insert(x, node.right);
+		}
+		return balance(node);
+	}
+
+	public void remove(Anytype x) {
+		this.root = this.remove(x, this.root);
+	}
+
+	public AVLNode<Anytype> remove(Anytype x, AVLNode<Anytype> node) {
+		if (node == null) {
+			return node;
+		}
+		int result = node.theElement.compareTo(x);
+		if (result < 0) {
+			node.right = remove(x, node.right);
+		} else if (result > 0) {
+			node.left = remove(x, node.left);
+		} else if (node.left != null && node.right != null) {// 从右子树找最小指放到当前节点，删除右子树最小值
+			node.theElement = findMin(node.right).theElement;
+			node.right = remove(node.theElement, node.right);
+		} else {
+			node = node.left == null ? node.right : node.left;
+		}
+		return balance(node);
+	}
+
+	public AVLNode<Anytype> findMin() {
+		return findMin(root);
+	}
+
+	private AVLNode<Anytype> findMin(AVLNode<Anytype> node) {
+		if (node == null) {
+			return node;
+		}
+		while (node.left != null) {
+			node = node.left;
+		}
+		return node;
+	}
+
+	public AVLNode<Anytype> findMax() {
+		return findMax(root);
+	}
+
+	private AVLNode<Anytype> findMax(AVLNode<Anytype> node) {
+		if (node == null) {
+			return node;
+		}
+		while (node.right != null) {
+			node = node.right;
+		}
+		return node;
+	}
+
+	public boolean contains(Anytype x) {
+		AVLNode<Anytype> node = root;
+		while (node != null) {
+			if (node.theElement.compareTo(x) > 0) {
+				node = node.left;
+			} else if (node.theElement.compareTo(x) < 0) {
+				node = node.right;
+			} else {
+				return true;
 			}
 		}
-		node.height = Math.max(node.height(node.left), node.height(node.right)) + 1;
+		return false;
+	}
+
+	/**
+	 * 调整结构使平衡
+	 * 
+	 * @param node
+	 * @return
+	 */
+	private AVLNode<Anytype> balance(AVLNode<Anytype> node) {
+		if (node == null) {
+			return node;
+		}
+		if (AVLNode.height(node.left) - AVLNode.height(node.right) > 1) {
+			if (AVLNode.height(node.left.left) > AVLNode.height(node.left.right)) {
+				node = rotateWithLeftChild(node);
+			} else {
+				node = doubleRotateWithLeftChild(node);
+			}
+		}
+		if (AVLNode.height(node.right) - AVLNode.height(node.left) > 1) {
+			if (AVLNode.height(node.right.right) > AVLNode.height(node.right.left)) {
+				node = rotateWithRightChild(node);
+			} else {
+				node = doubleRotateWithRightChild(node);
+			}
+		}
+		node.height = Math.max(AVLNode.height(node.left), AVLNode.height(node.right)) + 1;
 		return node;
 	}
 
@@ -41,8 +126,8 @@ public class AVLTree<Anytype extends Comparable<? super Anytype>> {
 		AVLNode<Anytype> node1 = node2.left;
 		node2.left = node1.right;
 		node1.right = node2;
-		node2.height = Math.max(node2.height(node2.left), node2.height(node2.right)) + 1;
-		node1.height = Math.max(node1.height(node1.left), node2.height) + 1;
+		node2.height = Math.max(AVLNode.height(node2.left), AVLNode.height(node2.right)) + 1;
+		node1.height = Math.max(AVLNode.height(node1.left), node2.height) + 1;
 		return node1;
 	}
 
@@ -50,8 +135,8 @@ public class AVLTree<Anytype extends Comparable<? super Anytype>> {
 		AVLNode<Anytype> node1 = node2.right;
 		node2.right = node1.left;
 		node1.left = node2;
-		node2.height = Math.max(node2.height(node2.left), node2.height(node2.right)) + 1;
-		node1.height = Math.max(node1.height(node1.right), node2.height) + 1;
+		node2.height = Math.max(AVLNode.height(node2.left), AVLNode.height(node2.right)) + 1;
+		node1.height = Math.max(AVLNode.height(node1.right), node2.height) + 1;
 		return node1;
 	}
 
@@ -65,12 +150,37 @@ public class AVLTree<Anytype extends Comparable<? super Anytype>> {
 		return rotateWithRightChild(node3);
 	}
 
+	/**
+	 * 返回所有包含的结点值,升序排列
+	 */
+	public String toString() {
+		return middleOrderToString(root);
+	}
+
+	private String middleOrderToString(AVLNode<Anytype> node) {
+		if (node == null) {
+			return "";
+		}
+		String cur = "";
+		if (node.left != null) {
+			cur = cur + middleOrderToString(node.left) + " ";
+		}
+		cur = cur + node.theElement.toString() + " ";
+		if (node.right != null) {
+			cur = cur + middleOrderToString(node.right) + " ";
+		}
+		return cur.trim();
+	}
+
 	public void preOrderPrint() {
 		this.preOrderPrint(this.root);
 		System.out.println();
 	}
 
 	public void preOrderPrint(AVLNode<Anytype> node) {
+		if (node == null) {
+			return;
+		}
 		System.out.print(node.theElement + "\t");
 		if (node.left != null) {
 			preOrderPrint(node.left);
@@ -78,6 +188,17 @@ public class AVLTree<Anytype extends Comparable<? super Anytype>> {
 		if (node.right != null) {
 			preOrderPrint(node.right);
 		}
+	}
+
+	public int size() {
+		return size(root);
+	}
+
+	private int size(AVLNode<Anytype> node) {
+		if (node == null) {
+			return 0;
+		}
+		return size(node.left) + size(node.right) + 1;
 	}
 
 	public static void main(String[] args) {
@@ -89,6 +210,17 @@ public class AVLTree<Anytype extends Comparable<? super Anytype>> {
 		avltree1.preOrderPrint();
 		avltree1.insert(6);
 		avltree1.preOrderPrint();
+		avltree1.insert(1);
+		avltree1.preOrderPrint();
+		avltree1.insert(5);
+		avltree1.preOrderPrint();
+		avltree1.remove(1);
+		avltree1.preOrderPrint();
+		avltree1.remove(6);
+		avltree1.preOrderPrint();
+		avltree1.insert(5);
+		avltree1.preOrderPrint();
+		System.out.println("--------------------------");
 
 		AVLTree<Integer> avltree2 = new AVLTree<Integer>();
 		int[] test2 = new int[] { 3, 2, 1, 4, 5, 6, 7, 16, 15, 14, 13, 12, 11, 10, 8, 9 };
@@ -116,7 +248,11 @@ class AVLNode<Anytype extends Comparable<? super Anytype>> {
 		this.right = rt;
 	}
 
-	public int height(AVLNode<Anytype> node) {
+	public static <Anytype extends Comparable<? super Anytype>> int height(AVLNode<Anytype> node) {
 		return node == null ? -1 : node.height;
+	}
+
+	public String toString() {
+		return theElement.toString();
 	}
 }
