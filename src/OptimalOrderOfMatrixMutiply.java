@@ -1,5 +1,5 @@
 /**
- * 计算矩阵的最优计算顺序,时间复杂度O(N^3)
+ * 计算矩阵的最优计算顺序,时间复杂度O(N^3)，动态规划
  * 
  */
 public class OptimalOrderOfMatrixMutiply {
