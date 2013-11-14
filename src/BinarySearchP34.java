@@ -3,8 +3,16 @@ import java.util.Arrays;
 public class BinarySearchP34 {
 	final static double DELT = 0.000001;
 
-	public static <Anytype extends Comparable> int bsearch(Anytype[] array,
-			Anytype target) {
+	/**
+	 * 二分搜索，分治
+	 * 如果target在array中则返回index，否则返回应该被插入的位置+1并改成负数，加1是因为0的负数还是0无法区别。
+	 * T(n)=2*T(n/2)+O(1),算法时间复杂度O(logN)
+	 * 
+	 * @param array
+	 * @param target
+	 * @return
+	 */
+	public static <Anytype extends Comparable> int bsearch(Anytype[] array, Anytype target) {
 		int start = 0;
 		int end = array.length - 1;
 		while (start <= end) {
@@ -18,7 +26,7 @@ public class BinarySearchP34 {
 				start = middle + 1;
 			}
 		}
-		return -1;
+		return -(start + 1);// 这里是为了
 	}
 
 	public static void main(String[] args) {
@@ -40,6 +48,9 @@ public class BinarySearchP34 {
 		Number target = new I();
 		target.value = 3;
 		System.out.println(BinarySearchP34.bsearch(array, target));
+		Number target1 = new I();
+		target1.value = 4;
+		System.out.println(BinarySearchP34.bsearch(array, target1));
 	}
 }
 

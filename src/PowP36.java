@@ -1,4 +1,11 @@
 public class PowP36 {
+	/**
+	 * 分治，时间复杂度O(logN), T(N)=2*T(N/2)+O(c),时间复杂度O(N*logN)
+	 * 
+	 * @param x
+	 * @param n
+	 * @return
+	 */
 	public static long pow(long x, int n) {
 		if (n == 0) {
 			return 1;
