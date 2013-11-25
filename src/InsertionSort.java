@@ -1,13 +1,13 @@
 /**
- * 插入排序
+ * 插入排序,稳定
  * 有序时最好O(N),平均和最坏O(N^2)
  */
 public class InsertionSort {
 	public static <T extends Comparable<? super T>> void InsertionSort(T[] input) {
-		for (int i = 0; i < input.length; i++) {
+		for (int i = 1; i < input.length; i++) {
 			T temp = input[i];
 			int j = i;
-			for (; j > 0 && input[j].compareTo(input[j - 1]) < 0; j--) {
+			for (; j > 0 && temp.compareTo(input[j - 1]) < 0; j--) {
 				input[j] = input[j - 1];
 			}
 			input[j] = temp;

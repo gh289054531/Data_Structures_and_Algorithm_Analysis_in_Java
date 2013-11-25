@@ -1,8 +1,9 @@
 import java.util.Arrays;
 
 /**
- * 快速选择，从N个数中选出第k大的数 最坏O(N^2),平均O(N)。具体方法类似于快速排序。
- * 也可以用堆实现，时间复杂度为O(N+k*logN)
+ * 快速选择，从N个数中选出第k大的数 最坏O(N^2),平均O(N)。具体方法类似于快速排序。 也可以用堆实现，时间复杂度为O(N+k*logN)
+ * 这里选择pivot采用了三数中值分割法，更好的做法是取五分化中项的中项，见另一份代码。
+ * 这个方法必须要让所有元素都放进内存，不给力。可以用堆实现只需要k大小的堆。
  */
 public class QuickSelect {
 	private static <T extends Comparable<? super T>> T Median(T[] input, int left, int right) {
@@ -57,18 +58,23 @@ public class QuickSelect {
 	}
 
 	public static <T extends Comparable<? super T>> T QuickSelect(T[] input, int k) {
-		if (input == null || k > input.length || k < 1) {
+		if (input == null || k < 1 || k > input.length) {
 			return null;
 		}
-		T[] temp = Arrays.copyOf(input, input.length);
-		QuickSelect(temp, 0, temp.length - 1, k);
-		return temp[k - 1];
+		QuickSelect(input, 0, input.length - 1, input.length + 1 - k);
+		return input[input.length - k];
 	}
 
 	public static void main(String[] args) {
 		Integer[] test1 = new Integer[] { 213, 123, 432, 54, 56765, 5324, 8768, 234 };
-		Integer result = QuickSelect.QuickSelect(test1, 8);
-		System.out.println(result);
+		System.out.println(QuickSelect.QuickSelect(test1, 1));
+		System.out.println(QuickSelect.QuickSelect(test1, 2));
+		System.out.println(QuickSelect.QuickSelect(test1, 3));
+		System.out.println(QuickSelect.QuickSelect(test1, 4));
+		System.out.println(QuickSelect.QuickSelect(test1, 5));
+		System.out.println(QuickSelect.QuickSelect(test1, 6));
+		System.out.println(QuickSelect.QuickSelect(test1, 7));
+		System.out.println(QuickSelect.QuickSelect(test1, 8));
 	}
 
 }
