@@ -1,10 +1,7 @@
 /**
- * 最优情况是数组已经有序O(N)，平均和最坏都是O(N*logN)，稳定
- * 需要额外空间O(N)
- * 归并排序是常用排序算法中需要比较次数最少的，分治思想
+ * 最优，平均和最坏都是O(N*logN)，稳定 需要额外空间O(N)。归并排序是常用排序算法中需要比较次数最少的，分治思想
  * 在JAVA中，泛型进行比较操作操作昂贵，而数组元素移动很快（因为移动的是引用），适合归并排序。
- * 因此泛型的Collections.sort()方法是一种归并排序的改进版本
- * 但是基本元素的排序Arrays.sort()方法是改进的快速排序
+ * 因此泛型的Collections.sort()方法是一种归并排序的改进版本 但是基本元素的排序Arrays.sort()方法是改进的快速排序
  */
 public class MergeSort {
 	public static <T extends Comparable<? super T>> void Merge(T[] input, T[] temp, int left, int middle, int right) {
@@ -43,7 +40,6 @@ public class MergeSort {
 		T[] temp = (T[]) new Comparable[input.length];
 		MergeSort(input, temp, 0, input.length - 1);
 	}
-
 
 	public static void main(String[] args) {
 		Integer[] test1 = new Integer[] { 213, 123, 432, 54, 56765, 5324, 8768, 234 };
