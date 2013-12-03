@@ -1,5 +1,5 @@
 /**
- * AVL树（二叉平衡树）实现
+ * AVL树（二叉平衡树）实现,查询、插入、删除的时间复杂度都是O(N*LogN)
  * 
  * @author zhangpeng
  * @param <Anytype>
@@ -11,6 +11,9 @@ public class AVLTree<Anytype extends Comparable<? super Anytype>> {
 		this.root = null;
 	}
 
+	/**
+	 * 可以重复插入
+	 */
 	public void insert(Anytype x) {
 		this.root = this.insert(x, this.root);
 	}
@@ -20,16 +23,17 @@ public class AVLTree<Anytype extends Comparable<? super Anytype>> {
 			return new AVLNode<Anytype>(x);
 		}
 		int result = node.theElement.compareTo(x);
-		if (result < 0) {
+		if (result <= 0) {
 			node.right = insert(x, node.right);
 		} else if (result > 0) {
 			node.left = insert(x, node.left);
-		} else {
-			node.right = insert(x, node.right);
 		}
 		return balance(node);
 	}
 
+	/**
+	 * 如果要删除的结点值有多个，随机删除
+	 */
 	public void remove(Anytype x) {
 		this.root = this.remove(x, this.root);
 	}
@@ -81,6 +85,9 @@ public class AVLTree<Anytype extends Comparable<? super Anytype>> {
 	}
 
 	public boolean contains(Anytype x) {
+		if (x == null) {
+			return false;
+		}
 		AVLNode<Anytype> node = root;
 		while (node != null) {
 			if (node.theElement.compareTo(x) > 0) {
@@ -96,9 +103,6 @@ public class AVLTree<Anytype extends Comparable<? super Anytype>> {
 
 	/**
 	 * 调整结构使平衡
-	 * 
-	 * @param node
-	 * @return
 	 */
 	private AVLNode<Anytype> balance(AVLNode<Anytype> node) {
 		if (node == null) {

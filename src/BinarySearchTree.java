@@ -1,3 +1,9 @@
+/**
+ * 二叉搜索树BST，查询、插入、删除的时间复杂度都是O(N*LogN)
+ * 
+ * @author zhangpeng
+ * @param <Anytype>
+ */
 public class BinarySearchTree<Anytype extends Comparable<? super Anytype>> {
 	private BinaryNode<Anytype> root;
 
@@ -17,22 +23,24 @@ public class BinarySearchTree<Anytype extends Comparable<? super Anytype>> {
 		this.root = null;
 	}
 
+	/**
+	 * 非递归实现
+	 */
 	public boolean contains(Anytype target) {
-		return contains(target, this.root);
-	}
-
-	public boolean contains(Anytype target, BinaryNode<Anytype> node) {
-		if (node == null) {
+		if (target == null) {
 			return false;
 		}
-		int result = target.compareTo(node.theElement);
-		if (result < 0) {
-			return contains(target, node.left);
-		} else if (result > 0) {
-			return contains(target, node.right);
-		} else {
-			return true;
+		BinaryNode<Anytype> node = root;
+		while (node != null) {
+			if (node.theElement.compareTo(target) > 0) {
+				node = node.left;
+			} else if (node.theElement.compareTo(target) < 0) {
+				node = node.right;
+			} else {
+				return true;
+			}
 		}
+		return false;
 	}
 
 	public Anytype findMin() {
