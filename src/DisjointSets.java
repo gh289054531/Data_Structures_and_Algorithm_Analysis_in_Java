@@ -1,10 +1,9 @@
 /**
- * 不相交集合类，采用数组表示树结构，基本操作find和union。
- * 采用按大小合并、路径压缩
+ * 不相交集合类，采用数组表示树结构，基本操作find和union。 采用按大小合并、路径压缩。 M次union和find操作的时间复杂度是O(M*logN)
  */
 public class DisjointSets {
 
-	int[] s = null;
+	public int[] s = null;
 
 	public DisjointSets(int num) throws Exception {
 		if (num < 1) {
@@ -18,7 +17,7 @@ public class DisjointSets {
 
 	/**
 	 * 采用路径压缩（path compression）的find操作，路径压缩find(x)效果是使得从x到根的所有结点的父节点为根，降低了树的高度。
-	 * 最差时间复杂度O(logN)
+	 * 连续M次操作需要最多O(M*logN)时间
 	 * 
 	 * @param x
 	 * @return 根的位置
@@ -32,8 +31,8 @@ public class DisjointSets {
 	}
 
 	/**
-	 * 按高度求并，union by size，让较小的树成为较大树的树的子树，保证所有树高度都不超过logN。 s中根存放树大小的负值，初始为-1。
-	 * 时间复杂度O(1)
+	 * 按大小求并，union by size，让较小的树成为较大树的树的子树，保证所有树高度都不超过logN。 s中根存放树大小的负值，初始为-1。
+	 * 连续M次操作需要O(M)平均时间
 	 * 
 	 * @param root1
 	 * @param root2
@@ -41,22 +40,29 @@ public class DisjointSets {
 	public void union(int root1, int root2) {
 		int size = s[root1] + s[root2];
 		if (s[root1] < s[root2]) {
-			s[root1] = root2;
-			s[root2] = size;
-		} else {
 			s[root2] = root1;
 			s[root1] = size;
+		} else {
+			s[root1] = root2;
+			s[root2] = size;
 		}
 	}
 
 	public static void main(String[] args) throws Exception {
 		DisjointSets ds = new DisjointSets(8);
-		ds.union(4, 5);
-		ds.union(6, 7);
-		ds.union(4, 6);
+		if (ds.find(4) != ds.find(5)) {
+			ds.union(ds.find(4), ds.find(5));
+		}
+		if (ds.find(6) != ds.find(7)) {
+			ds.union(ds.find(6), ds.find(7));
+		}
+		if (ds.find(4) != ds.find(7)) {
+			ds.union(ds.find(4), ds.find(7));
+		}
 		for (int i = 0; i < ds.s.length; i++) {
 			System.out.print(ds.s[i] + " ");
 		}
+		System.out.println(ds.find(5) == ds.find(6));
 	}
 
 }
